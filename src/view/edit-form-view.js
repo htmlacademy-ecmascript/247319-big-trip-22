@@ -1,13 +1,13 @@
 import {createElement} from '../render.js';
 import {formatDateInForm} from '../utils.js';
-import {createEventTypeShortTemplate, createDestinationsShortTemplate, createOffersTemplate} from '../markup-utils.js';
+import {createEventTypeShortTemplate, createDestinationsShortTemplate, createOffersTemplate, createPhotoTemplate} from '../markup-utils.js';
 import {POINT_TYPES} from '../const.js';
 
 function createEditFormTemplate(points, destinations, offers) {
   const {basePrice, dateFrom, dateTo, type, offers: checkedOffers} = points;
   const pointId = points.id || 0;
   const pointDestination = destinations.find((destination) => destination.id === points.destination);
-  const {name, description} = pointDestination || {};
+  const {name, description, pictures} = pointDestination || {};
   const pointsType = POINT_TYPES.map((pointType) => createEventTypeShortTemplate({pointType, pointId, type})).join('');
   const destinationsList = destinations.map((destination) => createDestinationsShortTemplate(destination)).join('');
   const typeOffers = offers.find((offer) => offer.type === points.type);
@@ -72,6 +72,7 @@ function createEditFormTemplate(points, destinations, offers) {
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
+        ${createPhotoTemplate(pictures)}
     </section>
   </section>
   </form></li>`);

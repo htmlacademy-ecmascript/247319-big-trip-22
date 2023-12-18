@@ -5,7 +5,7 @@ const destinations = [
     name: 'Cotor',
     pictures: [
       {
-        src: 'https://loremflickr.com/248/152?random=5',
+        src: 'https://traveltimes.ru/wp-content/uploads/2021/07/img-1006-mini.jpg',
         description: 'Bay of Kotor'
       }
     ]

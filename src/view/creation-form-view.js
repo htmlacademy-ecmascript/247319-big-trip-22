@@ -1,13 +1,13 @@
 import {createElement} from '../render.js';
 import {formatDateInForm} from '../utils.js';
-import {createEventTypeShortTemplate, createDestinationsShortTemplate, createOffersTemplate, createPhotoTemplate} from '../markup-utils.js';
+import {createEventTypeShortTemplate, createDestinationsShortTemplate, createOffersTemplate} from '../markup-utils.js';
 import {POINT_TYPES} from '../const.js';
 
 function createCreationFormTemplate(points, destinations, offers) {
   const {basePrice, dateFrom, dateTo, type, offers: checkedOffers} = points;
   const pointId = points.id || 0;
   const pointDestination = destinations.find((destination) => destination.id === points.destination);
-  const {name, description, pictures} = pointDestination || {};
+  const {name, description} = pointDestination || {};
   const pointsType = POINT_TYPES.map((pointType) => createEventTypeShortTemplate({pointType, pointId, type})).join('');
   const destinationsList = destinations.map((destination) => createDestinationsShortTemplate(destination)).join('');
   const typeOffers = offers.find((offer) => offer.type === points.type);
@@ -57,10 +57,7 @@ function createCreationFormTemplate(points, destinations, offers) {
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
-    <button class="event__rollup-btn" type="button">
-      <span class="visually-hidden">Open event</span>
-    </button>
+    <button class="event__reset-btn" type="reset">Cancel</button>
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -72,8 +69,7 @@ function createCreationFormTemplate(points, destinations, offers) {
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
-      ${createPhotoTemplate(pictures)}
-    </section>
+     </section>
   </section>
   </form></li>`);
 }
