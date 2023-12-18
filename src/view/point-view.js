@@ -1,23 +1,13 @@
 import {createElement} from '../render.js';
 import {humanizeDate, getTimeDifference} from '../utils.js';
-
-function createOfferTemplate({title, price}) {
-  return (
-    `<li class="event__offer">
-      <span class="event__offer-title">${title}</span>
-        +€&nbsp;
-      <span class="event__offer-price">${price}</span>
-    </li>`
-  );
-}
+import {createOffersShortTemplate} from '../markup-utils.js';
 
 function createPointTemplate(points, destinations, offers) {
   const {basePrice, dateFrom, dateTo, isFavorite, type} = points;
-  const upperCaseFirstletter = type.charAt(0).toUpperCase() + type.slice(1);
+  const upperCaseFirstletterType = type.charAt(0).toUpperCase() + type.slice(1);
   const pointDestination = destinations.find((destination) => destination.id === points.destination).name;
   const typeOffers = offers.find((offer) => offer.type === points.type);
-  const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOfferTemplate(offer)).join('') : '';
-
+  const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersShortTemplate(offer)).join('') : '';
   const favoriteClass = isFavorite === true ? 'event__favorite-btn--active' : '';
 
   return (`<li class="trip-events__item">
@@ -26,7 +16,7 @@ function createPointTemplate(points, destinations, offers) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${upperCaseFirstletter} ${pointDestination}</h3>
+    <h3 class="event__title">${upperCaseFirstletterType} ${pointDestination}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime=${dateFrom}>${humanizeDate(dateFrom)}</time>

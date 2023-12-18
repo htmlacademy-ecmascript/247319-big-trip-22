@@ -22,8 +22,12 @@ const destinations = [
     name: 'Monaco',
     pictures: [
       {
-        src: 'https://loremflickr.com/248/152?random=255',
-        description: 'Monaco casion'
+        src: 'https://wikiway.com/upload/uf/9bc/monaco_1.jpg',
+        description: 'Monaco casino'
+      },
+      {
+        src: 'https://about-planet.ru/images/evropa/strana/monako/monako9.jpg',
+        description: 'Monaco beach'
       }
     ]
   }

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
 const DATE_FORMAT = 'MMM DD';
+const DATE_FORMAT_IN_FORM = 'DD/MM/YY HH:mm';
 const MILLISECONDS_PER_SECOND = 1000;
 const SECONDS_PER_MINUTE = 60;
 const MINUTES_PER_HOUR = 60;
@@ -26,4 +27,8 @@ function getTimeDifference(dateFrom, dateTo) {
   }
 }
 
-export {getRandomArrayElement, humanizeDate, getTimeDifference};
+function formatDateInForm(date) {
+  return date ? dayjs(date).format(DATE_FORMAT_IN_FORM.toUpperCase()) : '';
+}
+
+export {getRandomArrayElement, humanizeDate, getTimeDifference, formatDateInForm};
