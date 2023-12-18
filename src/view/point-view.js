@@ -6,8 +6,9 @@ function createPointTemplate(points, destinations, offers) {
   const {basePrice, dateFrom, dateTo, isFavorite, type} = points;
   const upperCaseFirstletterType = type.charAt(0).toUpperCase() + type.slice(1);
   const pointDestination = destinations.find((destination) => destination.id === points.destination).name;
-  const typeOffers = offers.find((offer) => offer.type === points.type);
-  const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersShortTemplate(offer)).join('') : '';
+  const typeOffers = offers.find((offer) => offer.type === points.type).offers;
+  const checkedOffers = typeOffers.filter((typeOffer) => points.offers.includes(typeOffer.id));
+  const pointOffers = checkedOffers ? checkedOffers.map((offer) => createOffersShortTemplate(offer)).join('') : '';
   const favoriteClass = isFavorite === true ? 'event__favorite-btn--active' : '';
 
   return (`<li class="trip-events__item">
