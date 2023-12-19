@@ -8,15 +8,17 @@ import {render} from '../render.js';
 export default class TripInfoPresenter {
   listComponent = new TripEventsListView();
 
-  constructor({tripEventsContainer, pointModel}) {
+  constructor({tripEventsContainer, pointModel, offerModel, destinationModel}) {
     this.tripEventsContainer = tripEventsContainer;
     this.pointModel = pointModel;
+    this.offerModel = offerModel;
+    this.destinationModel = destinationModel;
   }
 
   init() {
     const points = this.pointModel.getPoints();
-    const destinations = this.pointModel.getDestinations();
-    const offers = this.pointModel.getOffers();
+    const destinations = this.destinationModel.getDestinations();
+    const offers = this.offerModel.getOffers();
 
     render(this.listComponent, this.tripEventsContainer);
     render(new CreationFormView(points[1], destinations, offers), this.listComponent.getElement());

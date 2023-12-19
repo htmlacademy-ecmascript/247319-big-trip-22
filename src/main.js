@@ -3,6 +3,8 @@ import SortingView from './view/sorting-view.js';
 import TripInfoView from './view/trip-info-view.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import PointModel from './model/point-model.js';
+import OfferModel from './model/offer-model.js';
+import DestinationModel from './model/destination-model.js';
 
 import {render} from './render.js';
 
@@ -19,5 +21,11 @@ render(new SortingView(), tripEventElement);
 const pointModel = new PointModel();
 pointModel.init();
 
-const tripInfoPresenter = new TripInfoPresenter({tripEventsContainer: tripEventElement, pointModel: pointModel});
+const offerModel = new OfferModel();
+offerModel.init();
+
+const destinationModel = new DestinationModel();
+destinationModel.init();
+
+const tripInfoPresenter = new TripInfoPresenter({tripEventsContainer: tripEventElement, pointModel: pointModel, offerModel: offerModel, destinationModel: destinationModel});
 tripInfoPresenter.init();
