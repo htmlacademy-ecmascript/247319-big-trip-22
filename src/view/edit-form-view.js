@@ -34,7 +34,7 @@ function createEditFormTemplate(points, destinations, offers) {
       <label class="event__label  event__type-output" for="event-destination-${pointId}">
         ${type}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name || ''}" list="destination-list-${pointId}">
+      <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name}" list="destination-list-${pointId}">
       <datalist id="destination-list-${pointId}">
         ${destinationsList};
       </datalist>
@@ -72,7 +72,7 @@ function createEditFormTemplate(points, destinations, offers) {
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
-        ${createPhotoTemplate(pictures)}
+      ${createPhotoTemplate(pictures)}
     </section>
   </section>
   </form></li>`);

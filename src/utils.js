@@ -1,10 +1,5 @@
 import dayjs from 'dayjs';
-
-const DATE_FORMAT = 'MMM DD';
-const DATE_FORMAT_IN_FORM = 'DD/MM/YY HH:mm';
-const MILLISECONDS_PER_SECOND = 1000;
-const SECONDS_PER_MINUTE = 60;
-const MINUTES_PER_HOUR = 60;
+import {MILLISECONDS_PER_SECOND, SECONDS_PER_MINUTE, MINUTES_PER_HOUR, HOURS_PER_DAY, DATE_FORMAT, DATE_FORMAT_IN_FORM} from './const.js';
 
 function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
@@ -18,9 +13,12 @@ function getTimeDifference(dateFrom, dateTo) {
   const startDate = new Date(dateFrom);
   const endDate = new Date(dateTo);
   const timeDifference = Math.abs(endDate - startDate);
-  const hoursDifference = Math.floor(timeDifference / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR));
+  const daysDifference = Math.floor(timeDifference / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY));
+  const hoursDifference = Math.floor(timeDifference / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR) % HOURS_PER_DAY);
   const minutesDifference = Math.floor((timeDifference / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)) % MINUTES_PER_HOUR);
-  if (hoursDifference >= 1) {
+  if (daysDifference > 1) {
+    return `${daysDifference}D ${hoursDifference}H ${minutesDifference}M`;
+  } else if (hoursDifference >= 1) {
     return `${hoursDifference}H ${minutesDifference}M`;
   } else {
     return `${minutesDifference}M`;
