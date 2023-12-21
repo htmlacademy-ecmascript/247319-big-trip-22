@@ -1,6 +1,11 @@
 import {createElement} from '../render.js';
 import {formatDateInForm} from '../utils.js';
-import {createEventTypeShortTemplate, createDestinationsShortTemplate, createOffersTemplate, createPhotoTemplate} from '../markup-utils.js';
+import {
+  createEventTypeShortTemplate,
+  createDestinationsShortTemplate,
+  createOffersTemplate,
+  createPhotoTemplate
+} from '../markup-utils.js';
 import {POINT_TYPES} from '../const.js';
 
 function createEditFormTemplate(points, destinations, offers) {
