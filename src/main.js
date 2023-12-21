@@ -4,20 +4,20 @@ import TripInfoView from './view/trip-info-view.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import PointModel from './model/point-model.js';
 
-import {render} from './render.js';
+import {render} from './framework/render.js';
 
 const pageHeaderElement = document.querySelector('.page-header');
 const pageMainElement = document.querySelector('.page-main');
-const tripMainElement = pageHeaderElement.querySelector('.trip-main');
-const tripControlsFiltersElement = tripMainElement.querySelector('.trip-controls__filters');
-const tripEventElement = pageMainElement.querySelector('.trip-events');
+const tripHeaderInfoContainer = pageHeaderElement.querySelector('.trip-main');
+const tripControlsFiltersElement = tripHeaderInfoContainer.querySelector('.trip-controls__filters');
+const tripEventsMainContainer = pageMainElement.querySelector('.trip-events');
 
-render(new TripInfoView(), tripMainElement, 'afterbegin');
+render(new TripInfoView(), tripHeaderInfoContainer, 'afterbegin');
 render(new FiltersView(), tripControlsFiltersElement);
-render(new SortingView(), tripEventElement);
+render(new SortingView(), tripEventsMainContainer);
 
 const pointModel = new PointModel();
 pointModel.init();
 
-const tripInfoPresenter = new TripInfoPresenter({tripEventsContainer: tripEventElement, pointModel: pointModel});
+const tripInfoPresenter = new TripInfoPresenter({tripEventsContainer: tripEventsMainContainer, pointModel: pointModel});
 tripInfoPresenter.init();

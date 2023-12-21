@@ -8,7 +8,7 @@ import {
   HOURS_PER_DAY
 } from './const.js';
 
-function getRandomArrayElement(items) {
+function getRandomArrayElement(items) { //Функция нигде не использьуется - УДОЛИ, когда придёт время
   return items[Math.floor(Math.random() * items.length)];
 }
 
