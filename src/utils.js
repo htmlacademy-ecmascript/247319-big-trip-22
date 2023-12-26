@@ -8,6 +8,8 @@ import {
   HOURS_PER_DAY
 } from './const.js';
 
+const isEscapeKey = (event) => event.key === 'Escape';
+
 function getRandomArrayElement(items) { //Функция нигде не использьуется - УДОЛИ, когда придёт время
   return items[Math.floor(Math.random() * items.length)];
 }
@@ -40,5 +42,6 @@ export {
   getRandomArrayElement,
   humanizeDate,
   getTimeDifference,
-  formatDateInForm
+  formatDateInForm,
+  isEscapeKey
 };
