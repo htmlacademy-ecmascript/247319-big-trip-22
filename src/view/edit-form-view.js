@@ -84,16 +84,16 @@ function createEditFormTemplate(points, destinations, offers) {
 }
 
 export default class EditFormView extends AbstractView {
-  #handleEditFormSubmit = null;
-  #handleEditFormClose = null;
+  #replaceEditFormToPointAfterSubmit = null;
+  #replaceEditFormToPointAfterClick = null;
 
   constructor(points, destinations, offers, onSubmit, onClick) {
     super();
     this.points = points;
     this.offers = offers;
     this.destinations = destinations;
-    this.#handleEditFormSubmit = onSubmit;
-    this.#handleEditFormClose = onClick;
+    this.#replaceEditFormToPointAfterSubmit = onSubmit;
+    this.#replaceEditFormToPointAfterClick = onClick;
     this.element.querySelector('.event--edit').addEventListener('submit', this.#submitHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeHandler);
   }
@@ -104,11 +104,11 @@ export default class EditFormView extends AbstractView {
 
   #submitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditFormSubmit();
+    this.#replaceEditFormToPointAfterSubmit();
   };
 
   #closeHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditFormClose();
+    this.#replaceEditFormToPointAfterClick();
   };
 }
