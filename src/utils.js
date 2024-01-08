@@ -1,7 +1,16 @@
 import dayjs from 'dayjs';
-import {MILLISECONDS_PER_SECOND, SECONDS_PER_MINUTE, MINUTES_PER_HOUR, HOURS_PER_DAY, DATE_FORMAT, DATE_FORMAT_IN_FORM} from './const.js';
+import {
+  DATE_FORMAT,
+  DATE_FORMAT_IN_FORM,
+  MILLISECONDS_PER_SECOND,
+  SECONDS_PER_MINUTE,
+  MINUTES_PER_HOUR,
+  HOURS_PER_DAY
+} from './const.js';
 
-function getRandomArrayElement(items) {
+const isEscapeKey = (event) => event.key === 'Escape';
+
+function getRandomArrayElement(items) { //Функция нигде не использьуется - УДОЛИ, когда придёт время
   return items[Math.floor(Math.random() * items.length)];
 }
 
@@ -29,4 +38,10 @@ function formatDateInForm(date) {
   return date ? dayjs(date).format(DATE_FORMAT_IN_FORM.toUpperCase()) : '';
 }
 
-export {getRandomArrayElement, humanizeDate, getTimeDifference, formatDateInForm};
+export {
+  getRandomArrayElement,
+  humanizeDate,
+  getTimeDifference,
+  formatDateInForm,
+  isEscapeKey
+};

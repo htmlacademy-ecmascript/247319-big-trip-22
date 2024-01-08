@@ -1,4 +1,4 @@
-export function createOffersShortTemplate({title, price}) {
+function createOffersShortTemplate({title, price}) {
   return (
     `<li class="event__offer">
       <span class="event__offer-title">${title}</span>
@@ -8,7 +8,7 @@ export function createOffersShortTemplate({title, price}) {
   );
 }
 
-export function createOffersTemplate({id, title, price}, checkedOffers) {
+function createOffersTemplate({id, title, price}, checkedOffers) {
   const isChecked = checkedOffers.includes(id) ? 'checked' : '';
 
   return (
@@ -23,7 +23,7 @@ export function createOffersTemplate({id, title, price}, checkedOffers) {
   );
 }
 
-export function createEventTypeShortTemplate({pointType, pointId, type}){
+function createEventTypeShortTemplate({pointType, pointId, type}){
   const upperCaseFirstletterType = pointType.charAt(0).toUpperCase() + pointType.slice(1);
 
   return (
@@ -34,11 +34,11 @@ export function createEventTypeShortTemplate({pointType, pointId, type}){
   `);
 }
 
-export function createDestinationsShortTemplate(destinations) {
+function createDestinationsShortTemplate(destinations) {
   return (`<option value="${destinations.name}"></option>`);
 }
 
-export function createPhotoTemplate(pictures) {
+function createPhotoTemplate(pictures) {
   let template = '';
   for (let i = 0; i < pictures.length; i++) {
     const {src, description} = pictures[i];
@@ -55,3 +55,11 @@ export function createPhotoTemplate(pictures) {
     return '';
   }
 }
+
+export {
+  createOffersShortTemplate,
+  createOffersTemplate,
+  createEventTypeShortTemplate,
+  createDestinationsShortTemplate,
+  createPhotoTemplate
+};

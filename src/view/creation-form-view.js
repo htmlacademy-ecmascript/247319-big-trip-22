@@ -1,6 +1,10 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {formatDateInForm} from '../utils.js';
-import {createEventTypeShortTemplate, createDestinationsShortTemplate, createOffersTemplate} from '../markup-utils.js';
+import {
+  createEventTypeShortTemplate,
+  createDestinationsShortTemplate,
+  createOffersTemplate
+} from '../markup-utils.js';
 import {POINT_TYPES} from '../const.js';
 
 function createCreationFormTemplate(points, destinations, offers) {
@@ -74,25 +78,15 @@ function createCreationFormTemplate(points, destinations, offers) {
   </form></li>`);
 }
 
-export default class CreationFormView {
+export default class CreationFormView extends AbstractView {
   constructor(points, destinations, offers) {
+    super();
     this.points = points;
     this.offers = offers;
     this.destinations = destinations;
   }
 
-  getTemplate() {
+  get template() {
     return createCreationFormTemplate(this.points, this.destinations, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
