@@ -9,50 +9,56 @@ export default class PointPresenter {
   #pointComponentsMap = new Map();
   #editFormComponentsMap = new Map();
   #escapeHandler = null;
+  #pointComponent = null;
+  #editFormComponent = null;
 
   constructor(point, destinations, offers, listcomponent) {
-    this.points = point;
+    this.point = point;
     this.destinations = destinations;
     this.offers = offers;
     this.#listComponent = listcomponent;
   }
 
   init() {
-    const point = this.points;
+    const point = this.point;
     const destinations = this.destinations;
     const offers = this.offers;
 
-    this.#renderRoutePoint(point, destinations, offers);
-  }
-
-  #renderRoutePoint(point, destinations, offers) {
-    const pointComponent = new PointView(
+    this.#pointComponent = new PointView(
       point, destinations, offers,
       () => {
         this.#replacePointToEditForm(point, destinations, offers);
       }
     );
-    this.#pointComponentsMap.set(point.id, pointComponent);
-    render(pointComponent, this.#listComponent.element);
+    this.#pointComponentsMap.set(point.id, this.#pointComponent);
+
+    this.#editFormComponent = new EditFormView(
+      point, destinations, offers,
+      () => {
+        this.#replaceEditFormToPointAfterSubmit(point);
+      },
+      () => {
+        this.#replaceEditFormToPointAfterClick(point);
+      }
+    );
+    this.#editFormComponentsMap.set(point.id, this.#editFormComponent);
+
+    render(this.#pointComponent, this.#listComponent.element);
   }
 
-  #replacePointToEditForm = (point, destinations, offers) => {
-    const pointComponent = this.#pointComponentsMap.get(point.id);
-    let editFormComponent = this.#editFormComponentsMap.get(point.id);
-    if (!editFormComponent) {
-      editFormComponent = new EditFormView(
-        point, destinations, offers,
-        () => {
-          this.#replaceEditFormToPointAfterSubmit(point);
-        },
-        () => {
-          this.#replaceEditFormToPointAfterClick(point);
-        }
-      );
-      this.#editFormComponentsMap.set(point.id, editFormComponent);
-    }
-    replace(editFormComponent, pointComponent);
+
+  #replacePointToEditForm = (point) => {
+    this.#pointComponent = this.#pointComponentsMap.get(point.id);
+    this.#editFormComponent = this.#editFormComponentsMap.get(point.id);
+    replace(this.#editFormComponent, this.#pointComponent);
     this.#addEscapeListener(point);
+  };
+
+  #closeEditForm = (point) => {
+    this.#editFormComponent = this.#editFormComponentsMap.get(point.id);
+    this.#pointComponent = this.#pointComponentsMap.get(point.id);
+    replace(this.#pointComponent, this.#editFormComponent);
+    document.removeEventListener('keydown', this.#escapeHandler);
   };
 
   #replaceEditFormToPointAfterSubmit = (point) => {
@@ -61,14 +67,6 @@ export default class PointPresenter {
 
   #replaceEditFormToPointAfterClick = (point) => {
     this.#closeEditForm(point);
-  };
-
-  #closeEditForm = (point) => {
-    const editFormComponent = this.#editFormComponentsMap.get(point.id);
-    const pointComponent = this.#pointComponentsMap.get(point.id);
-    replace(pointComponent, editFormComponent);
-    this.#pointComponentsMap.set(point.id, pointComponent);
-    document.removeEventListener('keydown', this.#escapeHandler);
   };
 
   #addEscapeListener = (point) => {

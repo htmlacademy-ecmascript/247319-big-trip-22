@@ -6,6 +6,7 @@ export default class TripInfoPresenter {
   #listComponent;
   #tripEventsContainer;
   #pointModel;
+  #pointPresenterMap = new Map();
 
   constructor({tripEventsContainer, pointModel}) {
     this.#listComponent = new TripPointsListView();
@@ -25,6 +26,7 @@ export default class TripInfoPresenter {
         point, destinations, offers, this.#listComponent,
       );
       pointPresenter.init();
+      this.#pointPresenterMap.set(point.id, pointPresenter);
     }
   }
 
