@@ -14,6 +14,10 @@ function getRandomArrayElement(items) { //Функция нигде не исп�
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function updatePoint(points, update) {
+  return points.map((point) => point.id === update.id ? update : point);
+}
+
 function humanizeDate(date) {
   return date ? dayjs(date).format(DATE_FORMAT.toUpperCase()) : '';
 }
@@ -43,5 +47,6 @@ export {
   humanizeDate,
   getTimeDifference,
   formatDateInForm,
-  isEscapeKey
+  isEscapeKey,
+  updatePoint,
 };
