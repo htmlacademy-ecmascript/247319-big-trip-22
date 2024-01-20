@@ -2,13 +2,13 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeDate, getTimeDifference} from '../utils.js';
 import {createOffersShortTemplate} from '../markup-utils.js';
 
-function createPointTemplate(points, destinations, offers) {
-  const {basePrice, dateFrom, dateTo, isFavorite, type} = points;
+function createPointTemplate(point, destinations, offers) {
+  const {basePrice, dateFrom, dateTo, isFavorite, type, destination} = point;
   const upperCaseFirstletterType = type.charAt(0).toUpperCase() + type.slice(1);
-  const pointDestination = destinations.find((destination) => destination.id === points.destination);
+  const pointDestination = destinations.find((dest) => dest.id === destination);
   const {name: namePointDestination} = pointDestination || {};
-  const typeOffers = offers.find((offer) => offer.type === points.type).offers;
-  const checkedOffers = typeOffers.filter((typeOffer) => points.offers.includes(typeOffer.id));
+  const typeOffers = offers.find((offer) => offer.type === type).offers;
+  const checkedOffers = typeOffers.filter((typeOffer) => point.offers.includes(typeOffer.id));
   const pointOffers = checkedOffers ? checkedOffers.map((offer) => createOffersShortTemplate(offer)).join('') : '';
   const favoriteClass = isFavorite === true ? 'event__favorite-btn--active' : '';
 
@@ -48,23 +48,33 @@ function createPointTemplate(points, destinations, offers) {
 }
 
 export default class PointView extends AbstractView {
-  #replacePointToEditForm = null;
+  #handleOpenEditClick = null;
+  #handleFavoriteClick = null;
 
-  constructor(points, destinations, offers, onClick) {
+  constructor(point, destinations, offers, onClick, onFavoriteClick) {
     super();
-    this.points = points;
-    this.offers = offers;
+    this.point = point;
     this.destinations = destinations;
-    this.#replacePointToEditForm = onClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+    this.offers = offers;
+    this.#handleOpenEditClick = onClick;
+    this.#handleFavoriteClick = onFavoriteClick;
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#openClickHandler);
+    this.element.querySelector('.event__favorite-btn')
+      .addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
-    return createPointTemplate(this.points, this.destinations, this.offers);
+    return createPointTemplate(this.point, this.destinations, this.offers);
   }
 
-  #clickHandler = (evt) => {
+  #openClickHandler = (evt) => {
     evt.preventDefault();
-    this.#replacePointToEditForm();
+    this.#handleOpenEditClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }

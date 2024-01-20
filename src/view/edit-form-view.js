@@ -8,14 +8,14 @@ import {
 } from '../markup-utils.js';
 import {POINT_TYPES} from '../const.js';
 
-function createEditFormTemplate(points, destinations, offers) {
-  const {basePrice, dateFrom, dateTo, type, offers: checkedOffers} = points;
-  const pointId = points.id || 0;
-  const pointDestination = destinations.find((destination) => destination.id === points.destination);
+function createEditFormTemplate(point, destinations, offers) {
+  const {basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers} = point;
+  const pointId = point.id || 0;
+  const pointDestination = destinations.find((dest) => dest.id === destination);
   const {name, description, pictures} = pointDestination || {};
   const pointsType = POINT_TYPES.map((pointType) => createEventTypeShortTemplate({pointType, pointId, type})).join('');
-  const destinationsList = destinations.map((destination) => createDestinationsShortTemplate(destination)).join('');
-  const typeOffers = offers.find((offer) => offer.type === points.type);
+  const destinationsList = destinations.map((dest) => createDestinationsShortTemplate(dest)).join('');
+  const typeOffers = offers.find((offer) => offer.type === type);
   const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersTemplate(offer, checkedOffers)).join('') : '';
 
   return (`<li class="trip-events__item"><form class="event event--edit" action="#" method="post">
@@ -84,18 +84,18 @@ function createEditFormTemplate(points, destinations, offers) {
 }
 
 export default class EditFormView extends AbstractView {
-  #replaceEditFormToPointAfterSubmit = null;
-  #replaceEditFormToPointAfterClick = null;
+  #handleFormSubmit;
+  #handleCloseEditForm;
 
-  constructor(points, destinations, offers, onSubmit, onClick) {
+  constructor(point, destinations, offers, onSubmit, onClick) {
     super();
-    this.points = points;
+    this.points = point;
     this.offers = offers;
     this.destinations = destinations;
-    this.#replaceEditFormToPointAfterSubmit = onSubmit;
-    this.#replaceEditFormToPointAfterClick = onClick;
+    this.#handleFormSubmit = onSubmit;
+    this.#handleCloseEditForm = onClick;
     this.element.querySelector('.event--edit').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
   }
 
   get template() {
@@ -104,11 +104,11 @@ export default class EditFormView extends AbstractView {
 
   #submitHandler = (evt) => {
     evt.preventDefault();
-    this.#replaceEditFormToPointAfterSubmit();
+    this.#handleFormSubmit();
   };
 
-  #closeHandler = (evt) => {
+  #closeClickHandler = (evt) => {
     evt.preventDefault();
-    this.#replaceEditFormToPointAfterClick();
+    this.#handleCloseEditForm();
   };
 }
