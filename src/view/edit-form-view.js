@@ -1,11 +1,11 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {formatDateInForm} from '../utils.js';
+import {formatDateInForm} from '../utils/utils.js';
 import {
   createEventTypeShortTemplate,
   createDestinationsShortTemplate,
   createOffersTemplate,
   createPhotoTemplate
-} from '../markup-utils.js';
+} from '../utils/markup-utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
