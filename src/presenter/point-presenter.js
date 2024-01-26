@@ -1,7 +1,7 @@
 import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
 
-import {isEscapeKey} from '../utils.js';
+import {isEscapeKey} from '../utils/utils.js';
 import {render, replace, remove} from '../framework/render.js';
 
 const Mode = {
