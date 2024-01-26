@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Roman Milaev](https://up.htmlacademy.ru/ecmascript/22/user/247319).
-* Наставник: [Вячеслав Луханин](https://htmlacademy.ru/profile/id1109115).
+* Наставник: [Антон Попов](https://htmlacademy.ru/profile/joker).
 
 ---
 
