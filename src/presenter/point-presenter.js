@@ -98,6 +98,7 @@ export default class PointPresenter {
   };
 
   #handleCloseEditForm = () => {
+    this.#editFormComponent.reset(this.point);
     this.#replaceEditFormToPoint();
   };
 
@@ -105,6 +106,7 @@ export default class PointPresenter {
     this.#escapeHandler = (evt) => {
       if (isEscapeKey(evt)) {
         evt.preventDefault();
+        this.#editFormComponent.reset(this.point);
         this.#replaceEditFormToPoint(point);
         document.removeEventListener('keydown', this.#escapeHandler);
       }
