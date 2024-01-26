@@ -23,7 +23,7 @@ function createOffersTemplate({id, title, price}, checkedOffers) {
   );
 }
 
-function createEventTypeShortTemplate({pointType, pointId, type}){
+function createEventTypeShortTemplate(pointType, pointId, type){
   const upperCaseFirstletterType = pointType.charAt(0).toUpperCase() + pointType.slice(1);
 
   return (

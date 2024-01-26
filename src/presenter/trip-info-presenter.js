@@ -23,11 +23,14 @@ export default class TripInfoPresenter {
     render(this.#listComponent, this.#tripEventsContainer);
 
     for (const point of this.#pointsList) {
-      const pointPresenter = new PointPresenter(
-        point, destinations, offers, this.#listComponent,
-        (updatedPoint) => this.#handlePointChange(updatedPoint),
-        () => this.#handleModeChange(),
-      );
+      const pointPresenter = new PointPresenter({
+        point: this.point,
+        destinations: destinations,
+        offers: offers,
+        listComponent: this.#listComponent,
+        onDataChange: this.#handlePointChange,
+        onModeChange: this.#handleModeChange,
+      });
       pointPresenter.init(point);
       this.#pointPresenterMap.set(point.id, pointPresenter);
     }
