@@ -42,6 +42,14 @@ function formatDateInForm(date) {
   return date ? dayjs(date).format(DATE_FORMAT_IN_FORM.toUpperCase()) : '';
 }
 
+function sortingPointsByPrice (a, b) {
+  return b.basePrice - a.basePrice;
+}
+
+function sortingPointsByTime (a, b) {
+  return dayjs(b.dateTo).diff(b.dateFrom) - dayjs(a.dateTo).diff(a.dateFrom);
+}
+
 export {
   getRandomArrayElement,
   humanizeDate,
@@ -49,4 +57,6 @@ export {
   formatDateInForm,
   isEscapeKey,
   updatePoint,
+  sortingPointsByPrice,
+  sortingPointsByTime,
 };

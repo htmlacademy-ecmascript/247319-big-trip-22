@@ -15,6 +15,12 @@ const FilterType = {
   PAST: 'past'
 };
 
+const SortingType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
 export {
   POINT_TYPES,
   DATE_FORMAT,
@@ -24,4 +30,5 @@ export {
   MINUTES_PER_HOUR,
   HOURS_PER_DAY,
   FilterType,
+  SortingType,
 };
