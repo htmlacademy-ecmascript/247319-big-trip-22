@@ -9,6 +9,7 @@ import {
   updatePoint,
   sortingPointsByPrice,
   sortingPointsByTime,
+  sortingPointsByDate
 } from '../utils/utils.js';
 import {generateFilter} from '../mocks/filter.js';
 import { SortingType } from '../utils/const.js';
@@ -34,9 +35,10 @@ export default class TripInfoPresenter {
 
   init() {
     this.#pointsList = [...this.#pointModel.points];
-    this.#sourcePoints = [...this.#pointModel.points];
     const destinations = [...this.#pointModel.destinations];
     const offers = [...this.#pointModel.offers];
+    this.#pointsList = this.#pointsList.sort(sortingPointsByDate);
+    this.#sourcePoints = [...this.#pointsList];
 
     const filters = generateFilter(this.#pointsList);
 
