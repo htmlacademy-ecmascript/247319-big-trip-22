@@ -10,10 +10,6 @@ import {
 
 const isEscapeKey = (event) => event.key === 'Escape';
 
-function getRandomArrayElement(items) { //Функция нигде не использьуется - УДОЛИ, когда придёт время
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 function updatePoint(points, update) {
   return points.map((point) => point.id === update.id ? update : point);
 }
@@ -42,11 +38,25 @@ function formatDateInForm(date) {
   return date ? dayjs(date).format(DATE_FORMAT_IN_FORM.toUpperCase()) : '';
 }
 
+function sortingPointsByPrice (a, b) {
+  return b.basePrice - a.basePrice;
+}
+
+function sortingPointsByDate(a, b) {
+  return dayjs(a.dateTo).diff(dayjs(b.dateTo));
+}
+
+function sortingPointsByTime (a, b) {
+  return dayjs(b.dateTo).diff(b.dateFrom) - dayjs(a.dateTo).diff(a.dateFrom);
+}
+
 export {
-  getRandomArrayElement,
   humanizeDate,
   getTimeDifference,
   formatDateInForm,
   isEscapeKey,
   updatePoint,
+  sortingPointsByPrice,
+  sortingPointsByTime,
+  sortingPointsByDate,
 };
