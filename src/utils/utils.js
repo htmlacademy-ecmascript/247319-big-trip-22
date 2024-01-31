@@ -10,8 +10,8 @@ import {
 
 const isEscapeKey = (event) => event.key === 'Escape';
 
-function updatePoint(points, update) {
-  return points.map((point) => point.id === update.id ? update : point);
+function updateItem(items, update) {
+  return items.map((point) => point.id === update.id ? update : point);
 }
 
 function humanizeDate(date) {
@@ -50,13 +50,18 @@ function sortingPointsByTime (a, b) {
   return dayjs(b.dateTo).diff(b.dateFrom) - dayjs(a.dateTo).diff(a.dateFrom);
 }
 
+// function isDatesEqual(dateA, dateB) {
+//   return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+// }
+
 export {
   humanizeDate,
   getTimeDifference,
   formatDateInForm,
   isEscapeKey,
-  updatePoint,
+  updateItem,
   sortingPointsByPrice,
   sortingPointsByTime,
   sortingPointsByDate,
+  // isDatesEqual,
 };

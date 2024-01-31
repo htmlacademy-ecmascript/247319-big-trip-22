@@ -90,14 +90,16 @@ export default class EditFormView extends AbstractStatefulView {
   #handleCloseEditForm;
   #dateFromPicker;
   #dateToPicker;
+  #handleDeleteClick;
 
-  constructor(point, destinations, offers, onSubmit, onClick) {
+  constructor(point, destinations, offers, onSubmit, onClick, onDeleteClick) {
     super();
     this.point = point;
     this.offers = offers;
     this.destinations = destinations;
     this.#handleFormSubmit = onSubmit;
     this.#handleCloseEditForm = onClick;
+    this.#handleDeleteClick = onDeleteClick;
     this._setState(EditFormView.parsePointToState(point));
     this._restoreHandlers();
   }
@@ -109,7 +111,11 @@ export default class EditFormView extends AbstractStatefulView {
       radio.addEventListener('change', this.#changeTypeHandler);
     });
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
-
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
+      checkbox.addEventListener('change', this.#offersChangeHandler);
+    });
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#editFormDeleteClickHandler);
     this.#setDatePickerFrom();
     this.#setDatePickerTo();
   }
@@ -167,6 +173,30 @@ export default class EditFormView extends AbstractStatefulView {
     }
   };
 
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value,
+    });
+    this.updateElement(this._state);
+  };
+
+  #offersChangeHandler = () => {
+    const checkedIds = Array
+      .from(this.element.querySelectorAll('.event__offer-checkbox:checked'))
+      .map((input) => input.id);
+
+    this._setState({
+      offers: checkedIds
+    });
+    this.updateElement(this._state);
+  };
+
+  #editFormDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditFormView.parseStateToPoint(this._state));
+  };
+
   #setDatePickerFrom() {
     if (this._state.dateFrom) {
       this.#dateFromPicker = flatpickr(
@@ -183,8 +213,9 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   #dateFromChangeHandler = ([userDate]) => {
+    const formattedDateFrom = new Date(userDate).toISOString();
     this.updateElement({
-      dateFrom: userDate,
+      dateFrom: formattedDateFrom,
     });
   };
 
@@ -204,8 +235,9 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   #dateToChangeHandler = ([userDate]) => {
+    const formattedDateTo = new Date(userDate).toISOString();
     this.updateElement({
-      dateTo: userDate,
+      dateTo: formattedDateTo,
     });
   };
 

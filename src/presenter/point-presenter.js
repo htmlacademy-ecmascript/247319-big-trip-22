@@ -3,6 +3,7 @@ import PointView from '../view/point-view.js';
 
 import {isEscapeKey} from '../utils/utils.js';
 import {render, replace, remove} from '../framework/render.js';
+import {UpdateType, UserAction} from '../utils/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -48,6 +49,7 @@ export default class PointPresenter {
       point, destinations, offers,
       (updatedPoint) => this.#handleFormSubmit(updatedPoint),
       () => this.#handleCloseEditForm(point),
+      () => this.#handleDeleteClick(point),
     );
     this.#editFormComponentsMap.set(point.id, this.#editFormComponent);
 
@@ -92,9 +94,13 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   };
 
-  #handleFormSubmit = (point) => {
+  #handleFormSubmit = (update) => {
+    this.#handlePointChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      update,
+    );
     this.#replaceEditFormToPoint();
-    this.#handlePointChange(point);
   };
 
   #handleCloseEditForm = () => {
@@ -115,6 +121,17 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handlePointChange({...this.point, isFavorite: !this.point.isFavorite});
+    this.#handlePointChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.point, isFavorite: !this.point.isFavorite});
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#handlePointChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 }
