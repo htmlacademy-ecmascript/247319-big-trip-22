@@ -1,49 +1,51 @@
 import TripPointsListView from '../view/trip-points-list-view.js';
 import EmptyPointsListView from '../view/empty-points-list-view.js';
 import SortingView from '../view/sorting-view.js';
-import FiltersView from '../view/filters-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import PointPresenter from './point-presenter.js';
+import {filter} from '../utils/filter.js';
 import {render, RenderPosition} from '../framework/render.js';
 import {
   sortingPointsByPrice,
   sortingPointsByTime,
-  sortingPointsByDate
+  sortingPointsByDate,
 } from '../utils/utils.js';
-import {generateFilter} from '../mocks/filter.js';
 import {SortingType, UpdateType, UserAction} from '../utils/const.js';
 
 const pageHeaderElement = document.querySelector('.page-header');
 const tripHeaderInfoContainer = pageHeaderElement.querySelector('.trip-main');
-const tripControlsFiltersElement = tripHeaderInfoContainer.querySelector('.trip-controls__filters');
-
 export default class TripInfoPresenter {
   #listComponent;
   #tripEventsContainer;
   #pointsModel;
+  #filtersModel = null;
   #pointPresenterMap = new Map();
   #sortingComponent;
   #currentSortingType = SortingType.DAY;
 
-  constructor({tripEventsContainer, pointsModel}) {
+  constructor({tripEventsContainer, pointsModel, filtersModel}) {
     this.#listComponent = new TripPointsListView();
     this.#tripEventsContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
+    this.#filtersModel = filtersModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filtersModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    const filterType = this.#filtersModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[filterType](points);
+
     switch (this.#currentSortingType) {
       case SortingType.TIME:
-        return [...this.#pointsModel.points].sort(sortingPointsByTime);
+        return filteredPoints.sort(sortingPointsByTime);
       case SortingType.PRICE:
-        return [...this.#pointsModel.points].sort(sortingPointsByPrice);
-      // case SortingType.DAY:
-      //   return [...this.#pointsModel.points].sort(sortingPointsByDate);
+        return filteredPoints.sort(sortingPointsByPrice);
     }
 
-    return [...this.#pointsModel.points].sort(sortingPointsByDate);
+    return filteredPoints.sort(sortingPointsByDate);
   }
 
   get offers() {
@@ -55,13 +57,11 @@ export default class TripInfoPresenter {
   }
 
   init() {
-    const filters = generateFilter(this.#pointsModel.points);
 
     if (this.#pointsModel.points.length === 0) {
       render (new EmptyPointsListView(), this.#tripEventsContainer);
     } else {
       render(new TripInfoView(), tripHeaderInfoContainer, RenderPosition.AFTERBEGIN);
-      render(new FiltersView({filters}), tripControlsFiltersElement);
       render(this.#listComponent, this.#tripEventsContainer);
     }
 

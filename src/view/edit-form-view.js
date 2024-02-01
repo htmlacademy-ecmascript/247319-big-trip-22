@@ -178,16 +178,15 @@ export default class EditFormView extends AbstractStatefulView {
     this._setState({
       basePrice: evt.target.value,
     });
-    this.updateElement(this._state);
   };
 
   #offersChangeHandler = () => {
-    const checkedIds = Array
+    const selectedOffers = Array
       .from(this.element.querySelectorAll('.event__offer-checkbox:checked'))
       .map((input) => input.id);
 
     this._setState({
-      offers: checkedIds
+      offers: selectedOffers,
     });
     this.updateElement(this._state);
   };
@@ -213,9 +212,8 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   #dateFromChangeHandler = ([userDate]) => {
-    const formattedDateFrom = new Date(userDate).toISOString();
     this.updateElement({
-      dateFrom: formattedDateFrom,
+      dateFrom: userDate.toISOString(),
     });
   };
 
@@ -235,9 +233,8 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   #dateToChangeHandler = ([userDate]) => {
-    const formattedDateTo = new Date(userDate).toISOString();
     this.updateElement({
-      dateTo: formattedDateTo,
+      dateTo: userDate.toISOString(),
     });
   };
 
