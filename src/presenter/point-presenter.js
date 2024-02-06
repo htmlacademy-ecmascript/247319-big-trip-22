@@ -1,7 +1,6 @@
 import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
 
-import {isEscapeKey} from '../utils/utils.js';
 import {render, replace, remove} from '../framework/render.js';
 import {UpdateType, UserAction} from '../utils/const.js';
 
@@ -12,9 +11,6 @@ const Mode = {
 
 export default class PointPresenter {
   #listComponent = null;
-  #pointComponentsMap = new Map();
-  #editFormComponentsMap = new Map();
-  #escapeHandler = null;
   #pointComponent = null;
   #editFormComponent = null;
   #handlePointChange = null;
@@ -38,20 +34,22 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevEditFormComponent = this.#editFormComponent;
 
-    this.#pointComponent = new PointView(
-      point, destinations, offers,
-      () => this.#replacePointToEditForm(point),
-      () => this.#handleFavoriteClick(point),
-    );
-    this.#pointComponentsMap.set(point.id, this.#pointComponent);
+    this.#pointComponent = new PointView({
+      point: this.point,
+      destinations: destinations,
+      offers: offers,
+      onClick: this.#handleEditClick,
+      onFavoriteClick: this.#handleFavoriteClick,
+    });
 
-    this.#editFormComponent = new EditFormView(
-      point, destinations, offers,
-      (updatedPoint) => this.#handleFormSubmit(updatedPoint),
-      () => this.#handleCloseEditForm(point),
-      () => this.#handleDeleteClick(point),
-    );
-    this.#editFormComponentsMap.set(point.id, this.#editFormComponent);
+    this.#editFormComponent = new EditFormView({
+      point: this.point,
+      destinations: destinations,
+      offers: offers,
+      onSubmit: this.#handleFormSubmit,
+      onClick: this.#handleCloseEditForm,
+      onDeleteClick: this.#handleDeleteClick,
+    });
 
     if (prevPointComponent === null || prevEditFormComponent === null) {
       render(this.#pointComponent, this.#listComponent.element);
@@ -59,11 +57,12 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.DEFAULT) {
-      replace (this.#pointComponent, prevPointComponent);
+      replace(this.#pointComponent, prevPointComponent);
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace (this.#editFormComponent, prevEditFormComponent);
+      replace(this.#editFormComponent, prevEditFormComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -75,23 +74,36 @@ export default class PointPresenter {
     remove(this.#editFormComponent);
   }
 
-  resetView(point) {
+  resetView() {
     if (this.#mode !== Mode.DEFAULT) {
-      this.#replaceEditFormToPoint(point);
+      this.#editFormComponent.reset(this.point);
+      this.#replaceEditFormToPoint();
     }
   }
 
-  #replacePointToEditForm = (point) => {
+  #replacePointToEditForm() {
     replace(this.#editFormComponent, this.#pointComponent);
-    this.#addEscapeListener(point);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
+  }
+
+  #replaceEditFormToPoint() {
+    replace(this.#pointComponent, this.#editFormComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
+  }
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#editFormComponent.reset(this.point);
+      this.#replaceEditFormToPoint();
+    }
   };
 
-  #replaceEditFormToPoint = () => {
-    replace(this.#pointComponent, this.#editFormComponent);
-    document.removeEventListener('keydown', this.#escapeHandler);
-    this.#mode = Mode.DEFAULT;
+  #handleEditClick = () => {
+    this.#replacePointToEditForm();
   };
 
   #handleFormSubmit = (update) => {
@@ -100,24 +112,11 @@ export default class PointPresenter {
       UpdateType.MINOR,
       update,
     );
-    this.#replaceEditFormToPoint();
   };
 
   #handleCloseEditForm = () => {
     this.#editFormComponent.reset(this.point);
     this.#replaceEditFormToPoint();
-  };
-
-  #addEscapeListener = (point) => {
-    this.#escapeHandler = (evt) => {
-      if (isEscapeKey(evt)) {
-        evt.preventDefault();
-        this.#editFormComponent.reset(this.point);
-        this.#replaceEditFormToPoint(point);
-        document.removeEventListener('keydown', this.#escapeHandler);
-      }
-    };
-    document.addEventListener('keydown', this.#escapeHandler);
   };
 
   #handleFavoriteClick = () => {

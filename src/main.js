@@ -1,7 +1,7 @@
-import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import PointsModel from './model/points-model.js';
-import FiltersPresenter from './presenter/filters-presenter.js';
 import FiltersModel from './model/filters-model.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
+import FiltersPresenter from './presenter/filters-presenter.js';
 
 const pageMainElement = document.querySelector('.page-main');
 const pageHeaderElement = document.querySelector('.page-header');
