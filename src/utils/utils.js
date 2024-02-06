@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {
-  DATE_FORMAT,
+  DATE_FORMAT_TIME,
+  DATE_FORMAT_DAY,
   DATE_FORMAT_IN_FORM,
   MILLISECONDS_PER_SECOND,
   SECONDS_PER_MINUTE,
@@ -8,14 +9,16 @@ import {
   HOURS_PER_DAY
 } from './const.js';
 
-const isEscapeKey = (event) => event.key === 'Escape';
-
-function updatePoint(points, update) {
-  return points.map((point) => point.id === update.id ? update : point);
+function updateItem(items, update) {
+  return items.map((point) => point.id === update.id ? update : point);
 }
 
-function humanizeDate(date) {
-  return date ? dayjs(date).format(DATE_FORMAT.toUpperCase()) : '';
+function humanizeDateTime(date) {
+  return date ? dayjs(date).format(DATE_FORMAT_TIME.toUpperCase()) : '';
+}
+
+function humanizeDateDay(date) {
+  return date ? dayjs(date).format(DATE_FORMAT_DAY.toUpperCase()) : '';
 }
 
 function getTimeDifference(dateFrom, dateTo) {
@@ -51,11 +54,11 @@ function sortingPointsByTime (a, b) {
 }
 
 export {
-  humanizeDate,
+  humanizeDateTime,
+  humanizeDateDay,
   getTimeDifference,
   formatDateInForm,
-  isEscapeKey,
-  updatePoint,
+  updateItem,
   sortingPointsByPrice,
   sortingPointsByTime,
   sortingPointsByDate,

@@ -35,11 +35,23 @@ function createEventTypeShortTemplate(pointType, pointId, type){
   `);
 }
 
+function createEventTypeShortTemplateForCreationForm(pointType, pointId, type){
+  return (
+    `<div class="event__type-item">
+      <input id="event-type-${pointType}-${pointId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}" ${pointType === type ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-${pointId}">${pointType}</label>
+    </div>
+  `);
+}
+
 function createDestinationsShortTemplate(destinations) {
   return (`<option value="${destinations.name}"></option>`);
 }
 
 function createPhotoTemplate(pictures) {
+  if (!pictures || pictures.length === 0) {
+    return '';
+  }
   let template = '';
   for (let i = 0; i < pictures.length; i++) {
     const {src, description} = pictures[i];
@@ -57,12 +69,12 @@ function createPhotoTemplate(pictures) {
   }
 }
 
-function createFilterItemTemplate(filter, isChecked) {
+function createFilterItemTemplate(filter, currentFilterType) {
   const {type, count} = filter;
 
   return (
     `<div class="trip-filters__filter">
-    <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isChecked ? 'checked' : ''} ${count === 0 ? 'disabled' : ''}>
+    <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${type === currentFilterType ? 'checked' : ''} ${count === 0 ? 'disabled' : ''}>
     <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
   </div>`);
 }
@@ -74,4 +86,5 @@ export {
   createDestinationsShortTemplate,
   createPhotoTemplate,
   createFilterItemTemplate,
+  createEventTypeShortTemplateForCreationForm,
 };

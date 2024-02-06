@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeDate, getTimeDifference} from '../utils/utils.js';
+import {humanizeDateTime, humanizeDateDay, getTimeDifference} from '../utils/utils.js';
 import {createOffersShortTemplate} from '../utils/markup-utils.js';
 
 function createPointTemplate(point, destinations, offers) {
@@ -14,16 +14,16 @@ function createPointTemplate(point, destinations, offers) {
 
   return (`<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime=${dateFrom}>${humanizeDate(dateFrom)}</time>
+    <time class="event__date" datetime=${dateFrom}>${humanizeDateDay(dateFrom)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${upperCaseFirstletterType} ${namePointDestination}</h3>
+    <h3 class="event__title">${upperCaseFirstletterType} ${namePointDestination || ''}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime=${dateFrom}>${humanizeDate(dateFrom)}</time>
+        <time class="event__start-time" datetime=${dateFrom}>${humanizeDateTime(dateFrom)}</time>
         —
-        <time class="event__end-time" datetime=${dateTo}>${humanizeDate(dateTo)}</time>
+        <time class="event__end-time" datetime=${dateTo}>${humanizeDateTime(dateTo)}</time>
       </p>
       <p class="event__duration">${getTimeDifference(dateFrom, dateTo)}</p>
     </div>
@@ -48,14 +48,17 @@ function createPointTemplate(point, destinations, offers) {
 }
 
 export default class PointView extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
   #handleOpenEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor(point, destinations, offers, onClick, onFavoriteClick) {
+  constructor({point, destinations, offers, onClick, onFavoriteClick}) {
     super();
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
     this.#handleOpenEditClick = onClick;
     this.#handleFavoriteClick = onFavoriteClick;
     this.element.querySelector('.event__rollup-btn')
@@ -65,7 +68,7 @@ export default class PointView extends AbstractView {
   }
 
   get template() {
-    return createPointTemplate(this.point, this.destinations, this.offers);
+    return createPointTemplate(this.#point, this.#destinations, this.#offers);
   }
 
   #openClickHandler = (evt) => {
