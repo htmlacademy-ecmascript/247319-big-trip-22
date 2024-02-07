@@ -10,13 +10,13 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 function createEditFormTemplate(point, destinations, offers) {
-  const {id: pointId, basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers} = point;
+  const {id: pointId, basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers, isDisabled, isSaving, isDeleting} = point;
   const pointDestination = destinations.find((dest) => dest.id === destination);
   const {name = '', description = '', pictures = ''} = pointDestination || {};
   const pointsType = offers.map((pointType) => createEventTypeShortTemplate(pointType.type, pointId, type)).join('');
   const destinationsList = destinations.map((dest) => createDestinationsShortTemplate(dest)).join('');
   const typeOffers = offers.find((offer) => offer.type === type);
-  const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersTemplate(offer, checkedOffers)).join('') : '';
+  const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersTemplate(offer, checkedOffers, isDisabled)).join('') : '';
 
   return (`<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -26,7 +26,7 @@ function createEditFormTemplate(point, destinations, offers) {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
@@ -40,7 +40,7 @@ function createEditFormTemplate(point, destinations, offers) {
         <label class="event__label  event__type-output" for="event-destination-${pointId}">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name}" list="destination-list-${pointId}" required>
+        <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${name}" list="destination-list-${pointId}" required ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-${pointId}">
           ${destinationsList}
         </datalist>
@@ -48,10 +48,10 @@ function createEditFormTemplate(point, destinations, offers) {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${formatDateInForm(dateFrom)}">
+        <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${formatDateInForm(dateFrom)}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${formatDateInForm(dateTo)}">
+        <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${formatDateInForm(dateTo)}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -59,11 +59,11 @@ function createEditFormTemplate(point, destinations, offers) {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -125,6 +125,10 @@ export default class EditFormView extends AbstractStatefulView {
     return createEditFormTemplate(this._state, this.#destinations, this.#offers);
   }
 
+  get isDisabled() {
+    return this._state.isDisabled;
+  }
+
   removeElement() {
     super.removeElement();
 
@@ -177,7 +181,7 @@ export default class EditFormView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: evt.target.value,
+      basePrice: parseInt(evt.currentTarget.value, 10),
     });
   };
 
@@ -214,7 +218,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateFrom: userDate.toISOString(),
+      dateFrom: userDate,
     });
   };
 
@@ -235,16 +239,24 @@ export default class EditFormView extends AbstractStatefulView {
 
   #dateToChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateTo: userDate.toISOString(),
+      dateTo: userDate,
     });
   };
 
   static parsePointToState(point) {
-    return {...point};
+    return {...point,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
   }
 
   static parseStateToPoint(state) {
     const point = {...state};
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }

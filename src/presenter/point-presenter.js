@@ -3,6 +3,7 @@ import PointView from '../view/point-view.js';
 
 import {render, replace, remove} from '../framework/render.js';
 import {UpdateType, UserAction} from '../utils/const.js';
+import {isDatesEqual} from '../utils/utils.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -84,6 +85,42 @@ export default class PointPresenter {
     }
   }
 
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if(this.#mode === Mode.EDITING) {
+      this.#editFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT){
+      this.#pointComponent.snake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editFormComponent.shake(resetFormState);
+  }
+
+
   #replacePointToEditForm() {
     replace(this.#editFormComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -110,9 +147,12 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (update) => {
+    const isPatchUpdate = isDatesEqual(this.#point.dateFrom, update.dateFrom)
+      && isDatesEqual(this.#point.dateTo, update.dateTo)
+      && this.#point.basePrice === update.basePrice;
     this.#handlePointChange(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
       update,
     );
   };
