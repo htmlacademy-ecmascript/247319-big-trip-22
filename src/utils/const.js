@@ -1,5 +1,5 @@
 const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-
+const DEFAULT_POINT_TYPE = 'flight';
 const DATE_FORMAT_TIME = 'HH:mm';
 const DATE_FORMAT_DAY = 'MMM dd';
 const DATE_FORMAT_IN_FORM = 'DD/MM/YY HH:mm';
@@ -48,4 +48,5 @@ export {
   SortingType,
   UserAction,
   UpdateType,
+  DEFAULT_POINT_TYPE,
 };
