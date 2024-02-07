@@ -8,7 +8,7 @@ import {
 import {formatDateInForm} from '../utils/utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import {POINT_TYPES} from '../utils/const.js';
+import {DEFAULT_POINT_TYPE} from '../utils/const.js';
 import he from 'he';
 
 const blankPoint = {
@@ -19,7 +19,7 @@ const blankPoint = {
   destination: '',
   isFavorite: false,
   offers: [],
-  type: POINT_TYPES[5],
+  type: DEFAULT_POINT_TYPE,
 };
 
 function createCreationFormTemplate(point, destinations, offers) {
