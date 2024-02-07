@@ -174,8 +174,6 @@ export default class CreationFormView extends AbstractStatefulView {
     if (newDestination) {
       this._setState({
         destination: newDestination.id,
-        description: newDestination.description,
-        pictures: newDestination.pictures,
       });
       this.updateElement(this._state);
     }
@@ -184,7 +182,7 @@ export default class CreationFormView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: evt.target.value,
+      basePrice: parseInt(evt.currentTarget.value, 10),
     });
   };
 
@@ -216,7 +214,7 @@ export default class CreationFormView extends AbstractStatefulView {
 
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateFrom: userDate.toISOString(),
+      dateFrom: userDate,
     });
   };
 
@@ -237,7 +235,7 @@ export default class CreationFormView extends AbstractStatefulView {
 
   #dateToChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateTo: userDate.toISOString(),
+      dateTo: userDate,
     });
   };
 
@@ -247,6 +245,9 @@ export default class CreationFormView extends AbstractStatefulView {
 
   static parseStateToPoint(state) {
     const point = {...state};
+    if (point.id === 0) {
+      delete point.id;
+    }
 
     return point;
   }

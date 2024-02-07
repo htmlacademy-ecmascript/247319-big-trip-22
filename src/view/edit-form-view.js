@@ -10,11 +10,10 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 function createEditFormTemplate(point, destinations, offers) {
-  const {basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers} = point;
-  const pointId = point.id || 0;
+  const {id: pointId, basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers} = point;
   const pointDestination = destinations.find((dest) => dest.id === destination);
   const {name = '', description = '', pictures = ''} = pointDestination || {};
-  const pointsType = offers.map((pointType) => createEventTypeShortTemplate(pointType.type)).join('');
+  const pointsType = offers.map((pointType) => createEventTypeShortTemplate(pointType.type, pointId, type)).join('');
   const destinationsList = destinations.map((dest) => createDestinationsShortTemplate(dest)).join('');
   const typeOffers = offers.find((offer) => offer.type === type);
   const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersTemplate(offer, checkedOffers)).join('') : '';
@@ -91,12 +90,14 @@ export default class EditFormView extends AbstractStatefulView {
   #dateFromPicker;
   #dateToPicker;
   #handleDeleteClick;
+  #offers = [];
+  #destinations = [];
 
-  constructor({point, destinations, offers, onSubmit, onClick, onDeleteClick}) {
+  constructor({point, offers, destinations, onSubmit, onClick, onDeleteClick}) {
     super();
     this.point = point;
-    this.offers = offers;
-    this.destinations = destinations;
+    this.#offers = offers;
+    this.#destinations = destinations;
     this.#handleFormSubmit = onSubmit;
     this.#handleCloseEditForm = onClick;
     this.#handleDeleteClick = onDeleteClick;
@@ -110,7 +111,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelectorAll('.event__type-input').forEach((radio) => {
       radio.addEventListener('change', this.#changeTypeHandler);
     });
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#changeDestinationHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
     this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
       checkbox.addEventListener('change', this.#offersChangeHandler);
@@ -121,7 +122,7 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditFormTemplate(this._state, this.destinations, this.offers);
+    return createEditFormTemplate(this._state, this.#destinations, this.#offers);
   }
 
   removeElement() {
@@ -162,12 +163,12 @@ export default class EditFormView extends AbstractStatefulView {
 
   #changeDestinationHandler = (evt) => {
     evt.preventDefault();
-    const newDestination = this.destinations.find((dest) => dest.name === evt.target.value);
+    const newDestination = this.#destinations.find((dest) => dest.name === evt.target.value);
     if (newDestination) {
       this._setState({
-        destination: newDestination.id,
-        description: newDestination.description,
-        pictures: newDestination.pictures,
+        destination: newDestination ? newDestination.id : '',
+        description: newDestination ? newDestination.description : '',
+        pictures: newDestination ? newDestination.pictures : '',
       });
       this.updateElement(this._state);
     }

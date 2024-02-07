@@ -16,26 +16,29 @@ export default class PointPresenter {
   #handlePointChange = null;
   #handleModeChange;
   #mode = Mode.DEFAULT;
+  #point = [];
+  #offers = [];
+  #destinations = [];
 
   constructor({point, destinations, offers, listComponent, onDataChange, onModeChange}) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
     this.#listComponent = listComponent;
     this.#handlePointChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
 
-  init(point) {
-    this.point = point;
-    const destinations = this.destinations;
-    const offers = this.offers;
+  init(point, destinations, offers) {
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
 
     const prevPointComponent = this.#pointComponent;
     const prevEditFormComponent = this.#editFormComponent;
 
     this.#pointComponent = new PointView({
-      point: this.point,
+      point: point,
       destinations: destinations,
       offers: offers,
       onClick: this.#handleEditClick,
@@ -43,7 +46,7 @@ export default class PointPresenter {
     });
 
     this.#editFormComponent = new EditFormView({
-      point: this.point,
+      point: point,
       destinations: destinations,
       offers: offers,
       onSubmit: this.#handleFormSubmit,
@@ -123,7 +126,7 @@ export default class PointPresenter {
     this.#handlePointChange(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-      {...this.point, isFavorite: !this.point.isFavorite});
+      {...this.#point, isFavorite: !this.#point.isFavorite});
   };
 
   #handleDeleteClick = (point) => {
