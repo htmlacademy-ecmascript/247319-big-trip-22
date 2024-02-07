@@ -19,7 +19,7 @@ const blankPoint = {
   destination: '',
   isFavorite: false,
   offers: [],
-  type: POINT_TYPES[3]
+  type: POINT_TYPES[5],
 };
 
 function createCreationFormTemplate(point, destinations, offers) {
@@ -208,7 +208,7 @@ export default class CreationFormView extends AbstractStatefulView {
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          defaultDate: null,
+          defaultDate: this._state.dateFrom,
           maxDate: this._state.dateTo,
           onChange: this.#dateFromChangeHandler,
         },
@@ -229,7 +229,7 @@ export default class CreationFormView extends AbstractStatefulView {
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          defaultDate: null,
+          defaultDate: this._state.dateTo,
           minDate: this._state.dateFrom,
           onChange: this.#dateToChangeHandler,
         },
@@ -258,6 +258,7 @@ export default class CreationFormView extends AbstractStatefulView {
 
     delete point.isDisabled;
     delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }
