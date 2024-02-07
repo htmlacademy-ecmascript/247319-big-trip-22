@@ -1,25 +1,17 @@
 import CreationFormView from '../view/creation-form-view.js';
 import {RenderPosition, remove, render} from '../framework/render.js';
 import {UserAction, UpdateType} from '../utils/const.js';
-import {nanoid} from 'nanoid';
-import NewPointButtonView from '../view/new-point-button-view.js';
 
 export default class NewPointPresenter {
   #listcomponent = null;
   #handlePointChange = null;
-  #createPoint;
   #creationFormComponent = null;
-  #newPointButtonComponent = null;
-  #newButtonConainer = document.querySelector('.trip-main');
+  #handleDestroy = null;
 
-  constructor({listComponent, onDataChange, createPoint}) {
+  constructor({listComponent, onDataChange, onDestroy}) {
     this.#listcomponent = listComponent;
     this.#handlePointChange = onDataChange;
-    this.#createPoint = createPoint;
-    this.#newPointButtonComponent = new NewPointButtonView({
-      onClick: this.#handleNewPointButtonClick
-    });
-    render(this.#newPointButtonComponent, this.#newButtonConainer);
+    this.#handleDestroy = onDestroy;
   }
 
   init(offers, destinations) {
@@ -40,7 +32,7 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#handleNewPointFormClose();
+    this.#handleDestroy();
 
     remove(this.#creationFormComponent);
     this.#creationFormComponent = null;
@@ -48,13 +40,31 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#creationFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#creationFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#creationFormComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (point) => {
     this.#handlePointChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {...point, id: nanoid()},
+      point,
     );
-    this.destroy();
   };
 
   #handleCancelClick = () => {
@@ -66,14 +76,5 @@ export default class NewPointPresenter {
       evt.preventDefault();
       this.destroy();
     }
-  };
-
-  #handleNewPointFormClose() {
-    this.#newPointButtonComponent.element.disabled = false;
-  }
-
-  #handleNewPointButtonClick = () => {
-    this.#createPoint();
-    this.#newPointButtonComponent.element.disabled = true;
   };
 }

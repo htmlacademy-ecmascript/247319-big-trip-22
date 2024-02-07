@@ -8,13 +8,13 @@ function createOffersShortTemplate({title, price}) {
   );
 }
 
-function createOffersTemplate(offers, checkedOffers) {
+function createOffersTemplate(offers, checkedOffers, isDisabled) {
   const {id, title, price} = offers;
   const isChecked = checkedOffers.includes(id) ? 'checked' : '';
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${title}" ${isChecked}>
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${title}" ${isChecked} ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;

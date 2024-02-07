@@ -19,18 +19,18 @@ const blankPoint = {
   destination: '',
   isFavorite: false,
   offers: [],
-  type: POINT_TYPES[3]
+  type: POINT_TYPES[5],
 };
 
 function createCreationFormTemplate(point, destinations, offers) {
-  const {basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers} = point;
+  const {basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers, isDisabled, isSaving} = point;
   const pointId = point.id || 0;
   const pointDestination = destination ? destinations.find((dest) => dest.id === destination) : '';
   const {name = '', description = '', pictures = ''} = pointDestination || {};
   const pointsType = offers.map((pointType) => createEventTypeShortTemplateForCreationForm(pointType.type)).join('');
   const destinationsList = destinations.map((dest) => createDestinationsShortTemplate(dest)).join('');
   const typeOffers = offers.find((offer) => offer.type === type);
-  const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersTemplate(offer, checkedOffers)).join('') : '';
+  const pointOffers = typeOffers ? typeOffers.offers.map((offer) => createOffersTemplate(offer, checkedOffers, isDisabled)).join('') : '';
 
   return (`<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -40,7 +40,7 @@ function createCreationFormTemplate(point, destinations, offers) {
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${pointId}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
@@ -54,7 +54,7 @@ function createCreationFormTemplate(point, destinations, offers) {
         <label class="event__label  event__type-output" for="event-destination-${pointId}">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${he.encode(name || '')}" list="destination-list-${pointId}" required>
+        <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${he.encode(name || '')}" list="destination-list-${pointId}" required ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-${pointId}">
           ${destinationsList}
         </datalist>
@@ -62,10 +62,10 @@ function createCreationFormTemplate(point, destinations, offers) {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-${pointId}">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${formatDateInForm(dateFrom)}">
+        <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${formatDateInForm(dateFrom)}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-${pointId}">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${formatDateInForm(dateTo)}">
+        <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${formatDateInForm(dateTo)}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -73,11 +73,11 @@ function createCreationFormTemplate(point, destinations, offers) {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-${pointId}" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''} required>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Cancel</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>Cancel</button>
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
@@ -132,6 +132,10 @@ export default class CreationFormView extends AbstractStatefulView {
     return createCreationFormTemplate(this._state, this.destinations, this.offers);
   }
 
+  get isDisabled() {
+    return this._state.isDisabled;
+  }
+
   reset(point) {
     this.updateElement(CreationFormView.parsePointToState(point));
   }
@@ -174,8 +178,6 @@ export default class CreationFormView extends AbstractStatefulView {
     if (newDestination) {
       this._setState({
         destination: newDestination.id,
-        description: newDestination.description,
-        pictures: newDestination.pictures,
       });
       this.updateElement(this._state);
     }
@@ -184,7 +186,7 @@ export default class CreationFormView extends AbstractStatefulView {
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: evt.target.value,
+      basePrice: parseInt(evt.currentTarget.value, 10),
     });
   };
 
@@ -206,7 +208,7 @@ export default class CreationFormView extends AbstractStatefulView {
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          defaultDate: null,
+          defaultDate: this._state.dateFrom,
           maxDate: this._state.dateTo,
           onChange: this.#dateFromChangeHandler,
         },
@@ -216,7 +218,7 @@ export default class CreationFormView extends AbstractStatefulView {
 
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateFrom: userDate.toISOString(),
+      dateFrom: userDate,
     });
   };
 
@@ -227,7 +229,7 @@ export default class CreationFormView extends AbstractStatefulView {
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          defaultDate: null,
+          defaultDate: this._state.dateTo,
           minDate: this._state.dateFrom,
           onChange: this.#dateToChangeHandler,
         },
@@ -237,16 +239,26 @@ export default class CreationFormView extends AbstractStatefulView {
 
   #dateToChangeHandler = ([userDate]) => {
     this.updateElement({
-      dateTo: userDate.toISOString(),
+      dateTo: userDate,
     });
   };
 
   static parsePointToState(point) {
-    return {...point};
+    return {...point,
+      isDisabled: false,
+      isSaving: false,
+    };
   }
 
   static parseStateToPoint(state) {
     const point = {...state};
+    if (point.id === 0) {
+      delete point.id;
+    }
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }

@@ -53,6 +53,10 @@ function sortingPointsByTime (a, b) {
   return dayjs(b.dateTo).diff(b.dateFrom) - dayjs(a.dateTo).diff(a.dateFrom);
 }
 
+function isDatesEqual(dateA, dateB) {
+  return dayjs(dateA).isSame(dateB);
+}
+
 export {
   humanizeDateTime,
   humanizeDateDay,
@@ -62,4 +66,5 @@ export {
   sortingPointsByPrice,
   sortingPointsByTime,
   sortingPointsByDate,
+  isDatesEqual,
 };
