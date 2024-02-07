@@ -157,7 +157,6 @@ export default class TripInfoPresenter {
         this.#clearPointsList();
         this.#renderMainContent();
         break;
-        //вероятно мажорные обновления нужно будет улучшить с очищением всего всего или объединить два кейса
       case UpdateType.MAJOR:
         this.#clearPointsList({resetSortingType: true});
         this.#renderMainContent();

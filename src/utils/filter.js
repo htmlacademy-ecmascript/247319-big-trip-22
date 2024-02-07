@@ -11,5 +11,4 @@ const filter = {
   [FilterType.PAST]: (points) => points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)))
 };
 
-
 export {filter};
