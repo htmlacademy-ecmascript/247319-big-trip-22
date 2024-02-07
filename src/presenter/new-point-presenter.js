@@ -14,7 +14,7 @@ export default class NewPointPresenter {
     this.#handleDestroy = onDestroy;
   }
 
-  init(offers, destinations) {
+  init(destinations, offers) {
     if (this.#creationFormComponent === null) {
       this.#creationFormComponent = new CreationFormView({
         destinations: destinations,

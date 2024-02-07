@@ -158,7 +158,6 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   #changeTypeHandler = (evt) => {
-    evt.preventDefault();
     this._setState({
       type: evt.target.value,
     });
@@ -166,20 +165,16 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   #changeDestinationHandler = (evt) => {
-    evt.preventDefault();
     const newDestination = this.#destinations.find((dest) => dest.name === evt.target.value);
     if (newDestination) {
       this._setState({
         destination: newDestination ? newDestination.id : '',
-        description: newDestination ? newDestination.description : '',
-        pictures: newDestination ? newDestination.pictures : '',
       });
       this.updateElement(this._state);
     }
   };
 
   #priceChangeHandler = (evt) => {
-    evt.preventDefault();
     this._setState({
       basePrice: parseInt(evt.currentTarget.value, 10),
     });
