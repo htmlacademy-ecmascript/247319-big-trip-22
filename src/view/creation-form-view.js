@@ -14,8 +14,8 @@ import he from 'he';
 const blankPoint = {
   id: 0,
   basePrice: 0,
-  dateFrom: new Date(),
-  dateTo: new Date(),
+  dateFrom: '',
+  dateTo: '',
   destination: '',
   isFavorite: false,
   offers: [],
@@ -86,11 +86,7 @@ function createCreationFormTemplate(point, destinations, offers) {
             ${pointOffers}
           </div>
       </section>
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
-        ${createPhotoTemplate(pictures)}
-      </section>
+        ${createPhotoTemplate(pictures, description)}
     </section>
   </form></li>`);
 }
@@ -202,18 +198,16 @@ export default class CreationFormView extends AbstractStatefulView {
   };
 
   #setDatePickerFrom() {
-    if (this._state.dateFrom) {
-      this.#dateFromPicker = flatpickr(
-        this.element.querySelector('input[name="event-start-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.dateFrom,
-          maxDate: this._state.dateTo,
-          onChange: this.#dateFromChangeHandler,
-        },
-      );
-    }
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        enableTime: true,
+        defaultDate: null,
+        dateFormat: 'd/m/y H:i',
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
   }
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -223,18 +217,16 @@ export default class CreationFormView extends AbstractStatefulView {
   };
 
   #setDatePickerTo() {
-    if (this._state.dateTo) {
-      this.#dateToPicker = flatpickr(
-        this.element.querySelector('input[name="event-end-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.dateTo,
-          minDate: this._state.dateFrom,
-          onChange: this.#dateToChangeHandler,
-        },
-      );
-    }
+    this.#dateToPicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        enableTime: true,
+        defaultDate: null,
+        dateFormat: 'd/m/y H:i',
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      },
+    );
   }
 
   #dateToChangeHandler = ([userDate]) => {

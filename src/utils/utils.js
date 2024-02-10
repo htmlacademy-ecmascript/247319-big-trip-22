@@ -28,13 +28,13 @@ function getTimeDifference(dateFrom, dateTo) {
   const daysDifference = Math.floor(timeDifference / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY));
   const hoursDifference = Math.floor(timeDifference / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE * MINUTES_PER_HOUR) % HOURS_PER_DAY);
   const minutesDifference = Math.floor((timeDifference / (MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE)) % MINUTES_PER_HOUR);
-  if (daysDifference > 1) {
+  if (daysDifference >= 1) {
     return `${daysDifference}D ${hoursDifference}H ${minutesDifference}M`;
   } else if (hoursDifference >= 1) {
     return `${hoursDifference}H ${minutesDifference}M`;
-  } else {
-    return `${minutesDifference}M`;
   }
+
+  return `${minutesDifference}M`;
 }
 
 function formatDateInForm(date) {
