@@ -26,7 +26,7 @@ function createCreationFormTemplate(point, destinations, offers) {
   const {basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers, isDisabled, isSaving} = point;
   const pointId = point.id || 0;
   const pointDestination = destination ? destinations.find((dest) => dest.id === destination) : '';
-  const {name = '', description = '', pictures = ''} = pointDestination || {};
+  const {name = '', description: destinationDescription = '', pictures = ''} = pointDestination || {};
   const pointsType = offers.map((pointType) => createEventTypeShortTemplateForCreationForm(pointType.type)).join('');
   const destinationsList = destinations.map((dest) => createDestinationsShortTemplate(dest)).join('');
   const typeOffers = offers.find((offer) => offer.type === type);
@@ -86,7 +86,7 @@ function createCreationFormTemplate(point, destinations, offers) {
             ${pointOffers}
           </div>
       </section>
-        ${createPhotoTemplate(pictures, description)}
+        ${createPhotoTemplate(pictures, destinationDescription)}
     </section>
   </form></li>`);
 }

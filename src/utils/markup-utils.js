@@ -48,20 +48,20 @@ function createDestinationsShortTemplate(destinations) {
   return (`<option value="${destinations.name}"></option>`);
 }
 
-function createPhotoTemplate(pictures, description) {
+function createPhotoTemplate(pictures, destinationDescription) {
   if (!pictures || pictures.length === 0) {
     return '';
   }
   let template = '';
   for (let i = 0; i < pictures.length; i++) {
-    const {src} = pictures[i];
+    const {src, description} = pictures[i];
     template += `<img class="event__photo" src="${src}" alt="${description}">`;
   }
   if (pictures.length > 0) {
     return (`
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
+        <p class="event__destination-description">${destinationDescription}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
            ${template}
