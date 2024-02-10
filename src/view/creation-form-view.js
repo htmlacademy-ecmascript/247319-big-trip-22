@@ -14,8 +14,8 @@ import he from 'he';
 const blankPoint = {
   id: 0,
   basePrice: 0,
-  dateFrom: new Date(),
-  dateTo: new Date(),
+  dateFrom: '',
+  dateTo: '',
   destination: '',
   isFavorite: false,
   offers: [],
@@ -26,7 +26,7 @@ function createCreationFormTemplate(point, destinations, offers) {
   const {basePrice, dateFrom, dateTo, type, destination, offers: checkedOffers, isDisabled, isSaving} = point;
   const pointId = point.id || 0;
   const pointDestination = destination ? destinations.find((dest) => dest.id === destination) : '';
-  const {name = '', description = '', pictures = ''} = pointDestination || {};
+  const {name = '', description: destinationDescription = '', pictures = ''} = pointDestination || {};
   const pointsType = offers.map((pointType) => createEventTypeShortTemplateForCreationForm(pointType.type)).join('');
   const destinationsList = destinations.map((dest) => createDestinationsShortTemplate(dest)).join('');
   const typeOffers = offers.find((offer) => offer.type === type);
@@ -86,11 +86,7 @@ function createCreationFormTemplate(point, destinations, offers) {
             ${pointOffers}
           </div>
       </section>
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
-        ${createPhotoTemplate(pictures)}
-      </section>
+        ${createPhotoTemplate(pictures, destinationDescription)}
     </section>
   </form></li>`);
 }
@@ -202,18 +198,16 @@ export default class CreationFormView extends AbstractStatefulView {
   };
 
   #setDatePickerFrom() {
-    if (this._state.dateFrom) {
-      this.#dateFromPicker = flatpickr(
-        this.element.querySelector('input[name="event-start-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.dateFrom,
-          maxDate: this._state.dateTo,
-          onChange: this.#dateFromChangeHandler,
-        },
-      );
-    }
+    this.#dateFromPicker = flatpickr(
+      this.element.querySelector('input[name="event-start-time"]'),
+      {
+        enableTime: true,
+        defaultDate: null,
+        dateFormat: 'd/m/y H:i',
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
   }
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -223,18 +217,16 @@ export default class CreationFormView extends AbstractStatefulView {
   };
 
   #setDatePickerTo() {
-    if (this._state.dateTo) {
-      this.#dateToPicker = flatpickr(
-        this.element.querySelector('input[name="event-end-time"]'),
-        {
-          enableTime: true,
-          dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.dateTo,
-          minDate: this._state.dateFrom,
-          onChange: this.#dateToChangeHandler,
-        },
-      );
-    }
+    this.#dateToPicker = flatpickr(
+      this.element.querySelector('input[name="event-end-time"]'),
+      {
+        enableTime: true,
+        defaultDate: null,
+        dateFormat: 'd/m/y H:i',
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      },
+    );
   }
 
   #dateToChangeHandler = ([userDate]) => {

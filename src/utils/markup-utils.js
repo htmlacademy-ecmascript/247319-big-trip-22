@@ -48,7 +48,7 @@ function createDestinationsShortTemplate(destinations) {
   return (`<option value="${destinations.name}"></option>`);
 }
 
-function createPhotoTemplate(pictures) {
+function createPhotoTemplate(pictures, destinationDescription) {
   if (!pictures || pictures.length === 0) {
     return '';
   }
@@ -58,15 +58,20 @@ function createPhotoTemplate(pictures) {
     template += `<img class="event__photo" src="${src}" alt="${description}">`;
   }
   if (pictures.length > 0) {
-    return (
-      `<div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${template}
+    return (`
+      <section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${destinationDescription}</p>
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+           ${template}
+          </div>
         </div>
-      </div>`);
-  } else {
-    return '';
+      </section>`
+    );
   }
+
+  return '';
 }
 
 function createFilterItemTemplate(filter, currentFilterType) {
